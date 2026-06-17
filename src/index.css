@@ -1,0 +1,161 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Outfit', 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-slate-50 text-slate-800 transition-colors duration-500 overflow-x-hidden;
+  }
+
+  body.dark {
+    @apply bg-slate-950 text-slate-100;
+  }
+
+  /* Custom thin scrollbar */
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-slate-100 transition-colors duration-500;
+  }
+  .dark ::-webkit-scrollbar-track {
+    @apply bg-slate-900;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-indigo-200 rounded-full hover:bg-indigo-400 transition-colors duration-300;
+  }
+  .dark ::-webkit-scrollbar-thumb {
+    @apply bg-slate-800 hover:bg-slate-700;
+  }
+}
+
+@layer components {
+  /* Premium dynamic background grid */
+  .bg-grid-pattern {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(79, 70, 229, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(79, 70, 229, 0.02) 1px, transparent 1px);
+  }
+  
+  .dark .bg-grid-pattern {
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  }
+
+  /* Glassmorphism base cards */
+  .glass-card {
+    @apply bg-white/70 backdrop-blur-md border border-slate-200/50 shadow-premium transition-all duration-300;
+  }
+
+  .dark .glass-card {
+    @apply bg-slate-900/60 backdrop-blur-md border border-slate-800/50 shadow-premium;
+  }
+
+  /* Cyber Neo glassmorphism variations */
+  .cyber-card {
+    @apply bg-white/40 backdrop-blur-xl border border-indigo-100/60 shadow-neon-indigo transition-all duration-500 hover:border-indigo-400/50;
+  }
+  
+  .dark .cyber-card {
+    @apply bg-slate-950/40 backdrop-blur-xl border border-indigo-950/50 shadow-neon-indigo hover:border-indigo-500/50;
+  }
+
+  /* Magnetic button hover */
+  .btn-magnetic {
+    @apply relative overflow-hidden transition-all duration-300 hover:scale-[1.03] active:scale-[0.98] cursor-none;
+  }
+
+  /* Timeline line dynamic connection */
+  .timeline-line {
+    background: linear-gradient(to bottom, rgb(224, 231, 255) 0%, rgb(79, 70, 229) 50%, rgb(6, 182, 212) 100%);
+  }
+  
+  .dark .timeline-line {
+    background: linear-gradient(to bottom, rgb(30, 41, 59) 0%, rgb(79, 70, 229) 50%, rgb(244, 63, 94) 100%);
+  }
+
+  /* Glowing dots */
+  .glow-orb {
+    @apply absolute rounded-full filter blur-3xl opacity-30 mix-blend-multiply animate-pulse-slow;
+  }
+
+  /* Project card glow and border lighting effect */
+  .project-card-glow {
+    position: relative;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .project-card-glow:hover {
+    border-color: rgba(99, 102, 241, 0.45) !important;
+    box-shadow: 
+      0 0 25px rgba(79, 70, 229, 0.15), 
+      0 0 10px rgba(6, 182, 212, 0.1) !important;
+  }
+
+  .dark .project-card-glow:hover {
+    border-color: rgba(6, 182, 212, 0.4) !important;
+    box-shadow: 
+      0 0 30px rgba(6, 182, 212, 0.15), 
+      0 0 10px rgba(79, 70, 229, 0.15) !important;
+  }
+
+  /* Click lighting effect (active state) */
+  .project-card-glow:active {
+    border-color: rgba(6, 182, 212, 0.85) !important;
+    box-shadow: 
+      0 0 35px rgba(6, 182, 212, 0.4), 
+      0 0 15px rgba(79, 70, 229, 0.3),
+      inset 0 0 12px rgba(6, 182, 212, 0.15) !important;
+  }
+
+  .dark .project-card-glow:active {
+    border-color: rgba(6, 182, 212, 0.9) !important;
+    box-shadow: 
+      0 0 40px rgba(6, 182, 212, 0.5), 
+      0 0 20px rgba(79, 70, 229, 0.4),
+      inset 0 0 15px rgba(6, 182, 212, 0.25) !important;
+  }
+}
+
+/* Hide default cursor on desktop when custom cursor is active */
+@media (min-width: 1024px) {
+  .custom-cursor-active, 
+  .custom-cursor-active a, 
+  .custom-cursor-active button, 
+  .custom-cursor-active input, 
+  .custom-cursor-active textarea, 
+  .custom-cursor-active [role="button"] {
+    cursor: none !important;
+  }
+}
+
+/* Smooth active tab slide transition */
+.active-slider-tab {
+  transition: all 0.35s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Scroll Progress Bar styling */
+#scroll-progress {
+  @apply fixed top-0 left-0 h-[3px] bg-gradient-to-r from-indigo-600 via-cyan-500 to-rose-500 z-[9999] transition-all duration-75;
+}
+
+/* Scroll reveal helper animation */
+.reveal-on-scroll {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.8s ease-out, transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-on-scroll.active {
+  opacity: 1;
+  transform: translateY(0);
+}

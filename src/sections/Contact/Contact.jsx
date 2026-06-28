@@ -28,6 +28,14 @@ export default function Contact() {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
     
+    // Clear submission errors when editing
+    if (errors.submit) {
+      setErrors(prev => {
+        const { submit, ...rest } = prev;
+        return rest;
+      });
+    }
+    
     if (touched[name]) {
       const error = validateField(name, value);
       setErrors(prev => ({ ...prev, [name]: error }));
@@ -41,7 +49,7 @@ export default function Contact() {
     setErrors(prev => ({ ...prev, [name]: error }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // Validate all fields
@@ -60,16 +68,55 @@ export default function Contact() {
       return;
     }
 
-    // Proceed to submit loading state
     setSubmitState('loading');
-    
-    // Simulate API query pipeline
-    setTimeout(() => {
-      setSubmitState('success');
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setErrors({});
-      setTouched({});
-    }, 2000);
+
+    // Retrieve Web3Forms access key from environment variables or fallback
+    const accessKey = import.meta.env.VITE_WEB3FORMS_ACCESS_KEY;
+
+    if (!accessKey || accessKey === 'your_access_key_here') {
+      console.warn("Web3Forms Access Key is not configured. Falling back to simulation mode.");
+      setTimeout(() => {
+        setSubmitState('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setErrors({});
+        setTouched({});
+      }, 1500);
+      return;
+    }
+
+    try {
+      const response = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({
+          access_key: accessKey,
+          name: formData.name,
+          email: formData.email,
+          subject: formData.subject,
+          message: formData.message,
+          from_name: 'Ayushi Rai - Portfolio'
+        })
+      });
+
+      const result = await response.json();
+      
+      if (response.status === 200 || result.success) {
+        setSubmitState('success');
+        setFormData({ name: '', email: '', subject: '', message: '' });
+        setErrors({});
+        setTouched({});
+      } else {
+        setSubmitState('idle');
+        setErrors({ submit: result.message || 'Form submission failed. Please try again.' });
+      }
+    } catch (err) {
+      console.error(err);
+      setSubmitState('idle');
+      setErrors({ submit: 'A network error occurred. Please try again later.' });
+    }
   };
 
   return (
@@ -271,6 +318,12 @@ export default function Contact() {
                       <p className="text-[10px] text-red-500 font-bold mt-1 pl-1">{errors.message}</p>
                     )}
                   </div>
+
+                  {errors.submit && (
+                    <div className="p-3.5 bg-red-500/10 border border-red-500/20 text-red-500 text-xs rounded-xl font-extrabold text-center animate-fade-in-up">
+                      {errors.submit}
+                    </div>
+                  )}
 
                   {/* Submit Button */}
                   <button
